@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
+@theme {
+  --color-noir-950: #050505;
+  --color-noir-900: #080808;
+  --color-noir-850: #0d0d0d;
+  --color-noir-800: #141414;
+  --color-noir-750: #1a1a1a;
+  --color-noir-700: #242424;
+  --color-noir-600: #333333;
+  --color-noir-border: rgba(255, 255, 255, 0.08);
+  --color-noir-border-gold: rgba(201, 169, 110, 0.25);
+
+  --color-gold-300: #e8d3aa;
+  --color-gold-400: #d8bd85;
+  --color-gold-500: #c9a96e;
+  --color-gold-600: #b59252;
+  --color-gold-700: #8f7239;
+
+  --color-rose-gold: #b76e79;
+
+  --color-ivory: #f5f0eb;
+  --color-ivory-muted: #dcd4cc;
+  --color-ash: #8a8580;
+  --color-stone: #55504a;
+
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-inter), sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #080808;
+  --foreground: #f5f0eb;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  background-color: #080808;
+  color: #f5f0eb;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #080808;
+  color: #f5f0eb;
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+  selection-background-color: #c9a96e;
+  selection-color: #080808;
+}
+
+::selection {
+  background: #c9a96e;
+  color: #080808;
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080808;
+}
+::-webkit-scrollbar-thumb {
+  background: #242424;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c9a96e;
+}
+
+/* Luxury Utilities */
+.glass-panel {
+  background: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-gold {
+  background: rgba(20, 20, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(201, 169, 110, 0.25);
+}
+
+.gold-glow {
+  box-shadow: 0 0 25px -5px rgba(201, 169, 110, 0.2);
+}
+
+.gold-glow-lg {
+  box-shadow: 0 0 40px -5px rgba(201, 169, 110, 0.35);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #f5f0eb 0%, #d8bd85 50%, #c9a96e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #c9a96e 0%,
+    #fff2db 50%,
+    #c9a96e 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+/* Subtle luxury button shimmer */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 70%
+  );
+  transform: rotate(30deg) translateX(-100%);
+  transition: transform 0.8s ease;
+}
+.btn-shimmer:hover::after {
+  transform: rotate(30deg) translateX(100%);
 }
