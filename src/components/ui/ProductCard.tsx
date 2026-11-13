@@ -9,7 +9,6 @@ import { Product } from '@/data/products';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useCartStore } from '@/store/cartStore';
 import { formatPrice } from '@/lib/utils';
-import ImageReveal from '@/components/animations/ImageReveal';
 
 interface ProductCardProps {
   product: Product;
@@ -112,43 +111,37 @@ export default function ProductCard({
         />
       </button>
 
-      {/* Image Container with Scroll Parallax & Curtain Reveal */}
+      {/* Image Container with Smooth Scroll Parallax */}
       <Link
         href={`/shop/${product.slug}`}
         className={`relative aspect-[3/4] w-full overflow-hidden block ${
           dark ? 'bg-[#1a1a1a]' : 'bg-[#f4efe8]'
         }`}
       >
-        <ImageReveal
-          curtainColor={dark ? '#1c1c1c' : '#ede8e1'}
-          duration={0.9}
-          className="w-full h-full"
+        <motion.div
+          style={{ y: imageY, scale: imageScale }}
+          className="relative w-full h-[112%] -top-[6%]"
         >
-          <motion.div
-            style={{ y: imageY, scale: imageScale }}
-            className="relative w-full h-[112%] -top-[6%]"
-          >
-            <Image
-              src={product.images.main}
-              alt={product.name}
-              fill
-              priority={priority}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className={`object-cover transition-opacity duration-700 ${
-                hovered ? 'opacity-0' : 'opacity-100'
-              }`}
-            />
-            <Image
-              src={product.images.detail}
-              alt={`${product.name} detail`}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className={`object-cover transition-opacity duration-700 absolute inset-0 ${
-                hovered ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
-          </motion.div>
-        </ImageReveal>
+          <Image
+            src={product.images.main}
+            alt={product.name}
+            fill
+            priority={priority}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className={`object-cover transition-opacity duration-500 ${
+              hovered ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+          <Image
+            src={product.images.detail}
+            alt={`${product.name} detail`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className={`object-cover transition-opacity duration-500 absolute inset-0 ${
+              hovered ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        </motion.div>
 
         {/* Hover Quick Action Buttons */}
         <div className="absolute inset-x-4 bottom-4 z-20 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
