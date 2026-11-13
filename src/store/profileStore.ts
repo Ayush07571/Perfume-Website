@@ -35,12 +35,12 @@ export const useProfileStore = create<ProfileStore>()(
   persist(
     (set) => ({
       profile: {
-        fullName: 'Ayush Karan',
-        email: 'ayush@example.com',
+        fullName: 'Alistair Sterling',
+        email: 'alistair.sterling@sanctum.com',
         phone: '+91 98765 43210',
-        address: 'Villa 14, Royal Palm Estates',
+        address: 'Penthouse 4B, Malabar Hill',
         city: 'Mumbai',
-        postalCode: '400001',
+        postalCode: '400006',
       },
       orders: [
         {

@@ -146,6 +146,7 @@ function ProfileContent() {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Alistair Sterling"
                   value={formProfile.fullName}
                   onChange={(e) =>
                     setFormProfile({ ...formProfile, fullName: e.target.value })
@@ -162,6 +163,7 @@ function ProfileContent() {
                   <input
                     type="email"
                     required
+                    placeholder="patron@sanctum.com"
                     value={formProfile.email}
                     onChange={(e) =>
                       setFormProfile({ ...formProfile, email: e.target.value })
@@ -177,6 +179,7 @@ function ProfileContent() {
                   <input
                     type="tel"
                     required
+                    placeholder="+91 98765 00000"
                     value={formProfile.phone}
                     onChange={(e) =>
                       setFormProfile({ ...formProfile, phone: e.target.value })
@@ -193,6 +196,7 @@ function ProfileContent() {
                 <input
                   type="text"
                   required
+                  placeholder="Penthouse 4B, Malabar Hill"
                   value={formProfile.address}
                   onChange={(e) =>
                     setFormProfile({ ...formProfile, address: e.target.value })
@@ -209,6 +213,7 @@ function ProfileContent() {
                   <input
                     type="text"
                     required
+                    placeholder="Mumbai"
                     value={formProfile.city}
                     onChange={(e) =>
                       setFormProfile({ ...formProfile, city: e.target.value })
@@ -224,6 +229,7 @@ function ProfileContent() {
                   <input
                     type="text"
                     required
+                    placeholder="400006"
                     value={formProfile.postalCode}
                     onChange={(e) =>
                       setFormProfile({ ...formProfile, postalCode: e.target.value })

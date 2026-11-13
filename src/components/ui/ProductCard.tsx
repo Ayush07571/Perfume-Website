@@ -12,9 +12,14 @@ import { formatPrice } from '@/lib/utils';
 interface ProductCardProps {
   product: Product;
   priority?: boolean;
+  dark?: boolean;
 }
 
-export default function ProductCard({ product, priority = false }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  priority = false,
+  dark = false,
+}: ProductCardProps) {
   const [hovered, setHovered] = useState(false);
   const isInWishlist = useWishlistStore((state) => state.isInWishlist(product.id));
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
@@ -46,17 +51,31 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="group relative flex flex-col bg-white border border-black/[0.07] hover:border-[#b58d4b]/60 transition-all duration-500 shadow-xs hover:shadow-xl"
+      className={`group relative flex flex-col transition-all duration-500 shadow-xs hover:shadow-xl ${
+        dark
+          ? 'bg-[#141414] border border-white/10 hover:border-[#b58d4b]/60'
+          : 'bg-white border border-black/[0.07] hover:border-[#b58d4b]/60'
+      }`}
     >
       {/* Top Badges */}
       <div className="absolute top-4 left-4 z-20 flex flex-col gap-1 pointer-events-none">
         {product.isBestSeller && (
-          <span className="text-[9px] uppercase tracking-[0.2em] bg-[#171717] text-[#faf8f5] font-semibold px-2.5 py-1">
+          <span
+            className={`text-[9px] uppercase tracking-[0.2em] font-semibold px-2.5 py-1 ${
+              dark ? 'bg-[#b58d4b] text-[#080808]' : 'bg-[#171717] text-[#faf8f5]'
+            }`}
+          >
             Best Seller
           </span>
         )}
         {product.isNew && (
-          <span className="text-[9px] uppercase tracking-[0.2em] bg-white/90 backdrop-blur-md text-[#171717] border border-black/10 px-2 py-0.5 font-medium">
+          <span
+            className={`text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 font-medium backdrop-blur-md ${
+              dark
+                ? 'bg-white/10 text-[#faf8f5] border border-white/20'
+                : 'bg-white/90 text-[#171717] border border-black/10'
+            }`}
+          >
             New Distillation
           </span>
         )}
@@ -65,20 +84,28 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       {/* Wishlist Button */}
       <button
         onClick={handleHeartClick}
-        className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 backdrop-blur-md border border-black/10 text-[#171717] hover:text-[#b58d4b] hover:border-[#b58d4b]/40 transition-colors shadow-xs cursor-pointer"
+        className={`absolute top-4 right-4 z-20 p-2.5 rounded-full backdrop-blur-md transition-colors shadow-xs cursor-pointer ${
+          dark
+            ? 'bg-black/60 border border-white/10 text-[#faf8f5] hover:text-[#b58d4b] hover:border-[#b58d4b]/40'
+            : 'bg-white/90 border border-black/10 text-[#171717] hover:text-[#b58d4b] hover:border-[#b58d4b]/40'
+        }`}
         aria-label="Save to wishlist"
       >
         <Heart
           className={`w-4 h-4 transition-transform duration-300 ${
-            isInWishlist ? 'fill-[#b58d4b] text-[#b58d4b] scale-110' : ''
+            isInWishlist
+              ? 'fill-[#b58d4b] text-[#b58d4b] scale-110'
+              : ''
           }`}
         />
       </button>
 
-      {/* Image Container on Soft Contrast Background */}
+      {/* Image Container */}
       <Link
         href={`/shop/${product.slug}`}
-        className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4efe8]"
+        className={`relative aspect-[3/4] w-full overflow-hidden ${
+          dark ? 'bg-[#1a1a1a]' : 'bg-[#f4efe8]'
+        }`}
       >
         <Image
           src={product.images.main}
@@ -104,44 +131,80 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         <div className="absolute inset-x-4 bottom-4 z-20 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
             onClick={handleQuickAdd}
-            className="flex-1 py-3 bg-[#171717] hover:bg-[#2c2a29] text-[#faf8f5] font-semibold text-[10px] uppercase tracking-[0.2em] flex items-center justify-center space-x-1.5 transition-colors shadow-lg cursor-pointer"
+            className={`flex-1 py-3 font-semibold text-[10px] uppercase tracking-[0.2em] flex items-center justify-center space-x-1.5 transition-colors shadow-lg cursor-pointer ${
+              dark
+                ? 'bg-[#b58d4b] hover:bg-[#cb9f54] text-[#080808]'
+                : 'bg-[#171717] hover:bg-[#2c2a29] text-[#faf8f5]'
+            }`}
           >
-            <ShoppingBag className="w-3.5 h-3.5 text-[#b58d4b]" />
+            <ShoppingBag
+              className={`w-3.5 h-3.5 ${dark ? 'text-[#080808]' : 'text-[#b58d4b]'}`}
+            />
             <span>Add to Bag</span>
           </button>
         </div>
       </Link>
 
       {/* Info Container */}
-      <div className="p-6 flex flex-col flex-1 justify-between bg-white">
+      <div
+        className={`p-6 flex flex-col flex-1 justify-between ${
+          dark ? 'bg-[#141414]' : 'bg-white'
+        }`}
+      >
         <div>
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.25em] text-[#716b64] mb-2 font-medium">
+          <div
+            className={`flex items-center justify-between text-[10px] uppercase tracking-[0.25em] mb-2 font-medium ${
+              dark ? 'text-[#a8a39d]' : 'text-[#716b64]'
+            }`}
+          >
             <span>{product.category}</span>
             <span className="text-[#b58d4b]">{product.family}</span>
           </div>
 
           <Link href={`/shop/${product.slug}`} className="block group/link">
-            <h3 className="font-serif text-xl text-[#171717] group-hover/link:text-[#b58d4b] transition-colors">
+            <h3
+              className={`font-serif text-xl transition-colors ${
+                dark
+                  ? 'text-[#faf8f5] group-hover/link:text-[#b58d4b]'
+                  : 'text-[#171717] group-hover/link:text-[#b58d4b]'
+              }`}
+            >
               {product.name}
             </h3>
           </Link>
 
-          <p className="text-xs text-[#716b64] italic mt-1 line-clamp-1">
+          <p
+            className={`text-xs italic mt-1 line-clamp-1 ${
+              dark ? 'text-[#a8a39d]' : 'text-[#716b64]'
+            }`}
+          >
             "{product.tagline}"
           </p>
         </div>
 
-        <div className="pt-4 mt-4 border-t border-black/[0.06] flex items-center justify-between">
+        <div
+          className={`pt-4 mt-4 flex items-center justify-between ${
+            dark ? 'border-t border-white/5' : 'border-t border-black/[0.06]'
+          }`}
+        >
           <div className="flex items-baseline space-x-2">
-            <span className="font-serif text-base text-[#171717] font-semibold">
+            <span
+              className={`font-serif text-base font-semibold ${
+                dark ? 'text-[#faf8f5]' : 'text-[#171717]'
+              }`}
+            >
               {formatPrice(price)}
             </span>
-            <span className="text-[10px] text-[#918b84]">/ {product.defaultVolume}</span>
+            <span
+              className={`text-[10px] ${dark ? 'text-[#716b64]' : 'text-[#918b84]'}`}
+            >
+              / {product.defaultVolume}
+            </span>
           </div>
 
           <Link
             href={`/shop/${product.slug}`}
-            className="text-[10px] uppercase tracking-[0.2em] text-[#b58d4b] hover:text-[#171717] transition-colors flex items-center space-x-1 font-semibold"
+            className="text-[10px] uppercase tracking-[0.2em] text-[#b58d4b] hover:opacity-80 transition-opacity flex items-center space-x-1 font-semibold"
           >
             <span>Explore</span>
             <Eye className="w-3 h-3" />
