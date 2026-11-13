@@ -25,22 +25,29 @@ export default function Hero() {
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080808] text-[#faf8f5]"
     >
-      {/* Full-bleed Background Image with Scroll Parallax */}
+      {/* Full-bleed Background Image with Floating Breathing Animation & Scroll Parallax */}
       <motion.div
-        style={{ y: backgroundY, scale: backgroundScale }}
+        style={{ y: backgroundY }}
         className="absolute inset-0 z-0 origin-center"
       >
-        <Image
-          src="/images/hero/hero-bottle.jpg"
-          alt="Maison Noir Luxury Perfume Flacon"
-          fill
-          priority
-          className="object-cover object-center filter contrast-125 brightness-75"
-        />
-        {/* Layered dark gradients for readability and drama */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/60 to-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#080808]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(181,141,75,0.08)_0%,transparent_75%)]" />
+        <motion.div
+          initial={{ scale: 1.16, opacity: 0 }}
+          animate={{ scale: 1.05, opacity: 1 }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full h-full animate-float"
+        >
+          <Image
+            src="/images/hero/hero-bottle.jpg"
+            alt="Maison Noir Luxury Perfume Flacon"
+            fill
+            priority
+            className="object-cover object-center filter contrast-125 brightness-75"
+          />
+          {/* Layered dark gradients for readability and drama */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/60 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#080808]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(181,141,75,0.08)_0%,transparent_75%)]" />
+        </motion.div>
       </motion.div>
 
       {/* Floating Gold Ambient Spheres with Scroll Parallax */}

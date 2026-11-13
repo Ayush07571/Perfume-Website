@@ -1,16 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShoppingBag, Heart, User, Menu, X } from 'lucide-react';
+import {
+  ShoppingBag,
+  Heart,
+  User,
+  Menu,
+  X,
+  Package,
+  Sliders,
+  ChevronDown,
+} from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useProfileStore } from '@/store/profileStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   const isHome = pathname === '/';
@@ -18,6 +30,7 @@ export default function Navbar() {
   const openCart = useCartStore((state) => state.openCart);
   const totalItems = useCartStore((state) => state.totalItems());
   const wishlistCount = useWishlistStore((state) => state.productIds.length);
+  const { profile, orders } = useProfileStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,7 +43,19 @@ export default function Navbar() {
 
   useEffect(() => {
     setMobileMenuOpen(false);
+    setProfileDropdownOpen(false);
   }, [pathname]);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const navLinks = [
     { label: 'Collection', href: '/shop' },
@@ -156,15 +181,19 @@ export default function Navbar() {
               })}
             </nav>
 
-            {/* Wishlist Link */}
+            {/* Wishlist Link -> /wishlist */}
             <Link
-              href="/profile?tab=wishlist"
+              href="/wishlist"
               className={`transition-colors relative p-1 ${
-                isDarkNav
+                pathname === '/wishlist'
+                  ? isDarkNav
+                    ? 'text-[#e5cb9b]'
+                    : 'text-[#b58d4b]'
+                  : isDarkNav
                   ? 'text-[#faf8f5]/80 hover:text-[#e5cb9b]'
                   : 'text-[#171717]/80 hover:text-[#b58d4b]'
               }`}
-              aria-label="Wishlist"
+              aria-label="Saved Wishlist"
             >
               <Heart className="w-[18px] h-[18px]" />
               {wishlistCount > 0 && (
@@ -180,22 +209,129 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Profile Link */}
-            <Link
-              href="/profile"
-              className={`transition-colors p-1 ${
-                pathname === '/profile'
-                  ? isDarkNav
-                    ? 'text-[#e5cb9b]'
-                    : 'text-[#b58d4b]'
-                  : isDarkNav
-                  ? 'text-[#faf8f5]/80 hover:text-[#e5cb9b]'
-                  : 'text-[#171717]/80 hover:text-[#b58d4b]'
-              }`}
-              aria-label="User Profile"
-            >
-              <User className="w-[18px] h-[18px]" />
-            </Link>
+            {/* Patron Profile & Orders Dropdown Menu */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                className={`transition-colors p-1 cursor-pointer flex items-center space-x-1 ${
+                  pathname.startsWith('/profile') || pathname === '/orders' || pathname === '/wishlist'
+                    ? isDarkNav
+                      ? 'text-[#e5cb9b]'
+                      : 'text-[#b58d4b]'
+                    : isDarkNav
+                    ? 'text-[#faf8f5]/80 hover:text-[#e5cb9b]'
+                    : 'text-[#171717]/80 hover:text-[#b58d4b]'
+                }`}
+                aria-label="Patron Sanctum Menu"
+              >
+                <User className="w-[18px] h-[18px]" />
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform duration-300 ${
+                    profileDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {profileDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.18 }}
+                    className="absolute right-0 mt-3 w-64 bg-white border border-black/10 shadow-2xl p-2 z-50 rounded-xs"
+                  >
+                    {/* Header Banner */}
+                    <div className="p-3 bg-[#faf8f5] border-b border-black/[0.06] mb-1">
+                      <span className="text-[9px] uppercase tracking-[0.25em] text-[#b58d4b] font-semibold block">
+                        Patron Sanctum
+                      </span>
+                      <strong className="font-serif text-sm text-[#171717] block truncate">
+                        {profile.fullName || 'Alistair Sterling'}
+                      </strong>
+                      <span className="text-[10px] text-[#716b64] font-mono block mt-0.5">
+                        Member ID: MN-PRIV-{profile.phone.slice(-4) || '8849'}
+                      </span>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <div className="space-y-0.5">
+                      <Link
+                        href="/profile"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className={`flex items-center justify-between p-2.5 text-xs transition-colors group ${
+                          pathname === '/profile'
+                            ? 'bg-[#faf8f5] text-[#b58d4b] font-semibold'
+                            : 'text-[#171717] hover:bg-[#faf8f5] hover:text-[#b58d4b]'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <User className="w-4 h-4 text-[#716b64] group-hover:text-[#b58d4b]" />
+                          <span>My Profile & Address</span>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/orders"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className={`flex items-center justify-between p-2.5 text-xs transition-colors group ${
+                          pathname === '/orders'
+                            ? 'bg-[#faf8f5] text-[#b58d4b] font-semibold'
+                            : 'text-[#171717] hover:bg-[#faf8f5] hover:text-[#b58d4b]'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <Package className="w-4 h-4 text-[#716b64] group-hover:text-[#b58d4b]" />
+                          <span>Orders & Tracking</span>
+                        </div>
+                        {orders.length > 0 && (
+                          <span className="text-[10px] font-mono bg-black/5 px-2 py-0.5 text-[#171717] font-semibold">
+                            {orders.length}
+                          </span>
+                        )}
+                      </Link>
+
+                      <Link
+                        href="/wishlist"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className={`flex items-center justify-between p-2.5 text-xs transition-colors group ${
+                          pathname === '/wishlist'
+                            ? 'bg-[#faf8f5] text-[#b58d4b] font-semibold'
+                            : 'text-[#171717] hover:bg-[#faf8f5] hover:text-[#b58d4b]'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <Heart className="w-4 h-4 text-[#716b64] group-hover:text-[#b58d4b]" />
+                          <span>Saved Wishlist</span>
+                        </div>
+                        {wishlistCount > 0 && (
+                          <span className="text-[10px] font-mono bg-[#b58d4b]/15 text-[#b58d4b] px-2 py-0.5 font-semibold">
+                            {wishlistCount}
+                          </span>
+                        )}
+                      </Link>
+
+                      <Link
+                        href="/profile?tab=preferences"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center justify-between p-2.5 text-xs text-[#171717] hover:bg-[#faf8f5] hover:text-[#b58d4b] transition-colors group"
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <Sliders className="w-4 h-4 text-[#716b64] group-hover:text-[#b58d4b]" />
+                          <span>Olfactory Taste</span>
+                        </div>
+                      </Link>
+                    </div>
+
+                    <div className="pt-2 mt-2 border-t border-black/[0.06] px-2 pb-1">
+                      <span className="text-[9px] uppercase tracking-wider text-[#918b84] block text-center">
+                        Concierge Dispatch Available 24/7
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Cart Button */}
             <button
@@ -263,18 +399,39 @@ export default function Navbar() {
                   ))}
                   <div className="pt-4 border-t border-black/10 flex flex-col space-y-4">
                     <Link
-                      href="/profile?tab=wishlist"
-                      className="text-xs uppercase tracking-[0.2em] text-[#b58d4b] flex items-center space-x-2 font-medium"
+                      href="/profile"
+                      className="text-xs uppercase tracking-[0.2em] text-[#171717] hover:text-[#b58d4b] flex items-center space-x-2 font-medium"
                     >
-                      <Heart className="w-4 h-4" />
-                      <span>Wishlist ({wishlistCount})</span>
+                      <User className="w-4 h-4 text-[#b58d4b]" />
+                      <span>Patron Profile</span>
                     </Link>
                     <Link
-                      href="/profile"
-                      className="text-xs uppercase tracking-[0.2em] text-[#171717]/70 hover:text-[#b58d4b] flex items-center space-x-2"
+                      href="/orders"
+                      className="text-xs uppercase tracking-[0.2em] text-[#171717] hover:text-[#b58d4b] flex items-center justify-between font-medium"
                     >
-                      <User className="w-4 h-4" />
-                      <span>My Profile & Orders</span>
+                      <div className="flex items-center space-x-2">
+                        <Package className="w-4 h-4 text-[#b58d4b]" />
+                        <span>Orders & Tracking</span>
+                      </div>
+                      {orders.length > 0 && (
+                        <span className="text-[10px] font-mono bg-black/5 px-2 py-0.5 text-[#171717] font-semibold">
+                          {orders.length}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      href="/wishlist"
+                      className="text-xs uppercase tracking-[0.2em] text-[#171717] hover:text-[#b58d4b] flex items-center justify-between font-medium"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Heart className="w-4 h-4 text-[#b58d4b]" />
+                        <span>Saved Wishlist</span>
+                      </div>
+                      {wishlistCount > 0 && (
+                        <span className="text-[10px] font-mono bg-[#b58d4b]/15 text-[#b58d4b] px-2 py-0.5 font-semibold">
+                          {wishlistCount}
+                        </span>
+                      )}
                     </Link>
                   </div>
                 </nav>
