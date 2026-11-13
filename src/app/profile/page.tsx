@@ -32,15 +32,9 @@ function ProfileContent() {
   const { productIds, toggleWishlist } = useWishlistStore();
   const addItem = useCartStore((state) => state.addItem);
 
-  const [formProfile, setFormProfile] = useState(profile);
-  const [savedSuccess, setSavedSuccess] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('maison-noir-profile');
-    }
-    if (profile.fullName.includes('Ayush') || profile.email.includes('ayush')) {
-      const sanitized = {
+  const sanitizeProfile = (p: typeof profile) => {
+    if (!p?.fullName || p.fullName.toLowerCase().includes('ayush') || p.email.toLowerCase().includes('ayush')) {
+      return {
         fullName: 'Alistair Sterling',
         email: 'alistair.sterling@sanctum.com',
         phone: '+91 98765 43210',
@@ -48,11 +42,28 @@ function ProfileContent() {
         city: 'Mumbai',
         postalCode: '400006',
       };
-      updateProfile(sanitized);
-      setFormProfile(sanitized);
-    } else {
-      setFormProfile(profile);
     }
+    return p;
+  };
+
+  const safeProfile = sanitizeProfile(profile);
+  const [formProfile, setFormProfile] = useState(safeProfile);
+  const [savedSuccess, setSavedSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('maison-noir-profile');
+        localStorage.removeItem('maison-noir-profile-v2');
+      } catch (e) {
+        // ignore
+      }
+    }
+    const clean = sanitizeProfile(profile);
+    if (clean.fullName !== profile.fullName || clean.email !== profile.email) {
+      updateProfile(clean);
+    }
+    setFormProfile(clean);
   }, [profile, updateProfile]);
 
   const handleProfileSave = (e: React.FormEvent) => {
@@ -85,10 +96,10 @@ function ProfileContent() {
               Client Sanctum
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl text-[#171717] mt-1 font-normal">
-              {profile.fullName || 'Patron Profile'}
+              {safeProfile.fullName || 'Patron Profile'}
             </h1>
             <p className="text-xs text-[#716b64] mt-1 font-mono">
-              Member ID: MN-PRIV-{profile.phone.slice(-4) || '8849'}
+              Member ID: MN-PRIV-{safeProfile.phone.slice(-4) || '8849'}
             </p>
           </div>
 

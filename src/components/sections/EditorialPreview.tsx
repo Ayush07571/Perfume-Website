@@ -1,6 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ParallaxImage from '@/components/animations/ParallaxImage';
+import ImageReveal from '@/components/animations/ImageReveal';
 import { ARTICLES } from '@/data/articles';
 import { ArrowRight, BookOpen } from 'lucide-react';
 
@@ -17,7 +18,7 @@ export default function EditorialPreview() {
               <BookOpen className="w-3.5 h-3.5" />
               <span>The Olfactory Journal</span>
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#171717] mt-2">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#171717] mt-2 font-normal">
               Chronicles of Scent
             </h2>
           </ScrollReveal>
@@ -42,18 +43,20 @@ export default function EditorialPreview() {
                 href={`/journal/${mainArticle.slug}`}
                 className="group block bg-white border border-black/[0.08] hover:border-[#b58d4b]/60 transition-all duration-500 overflow-hidden shadow-xs hover:shadow-xl"
               >
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f4efe8]">
-                  <Image
-                    src={mainArticle.image}
-                    alt={mainArticle.title}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 60vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-medium">
-                    {mainArticle.category}
+                <ImageReveal curtainColor="#b58d4b" duration={1.1}>
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f4efe8]">
+                    <ParallaxImage
+                      src={mainArticle.image}
+                      alt={mainArticle.title}
+                      priority
+                      parallaxSpeed={0.16}
+                      containerClassName="w-full h-full"
+                    />
+                    <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-medium z-10">
+                      {mainArticle.category}
+                    </div>
                   </div>
-                </div>
+                </ImageReveal>
 
                 <div className="p-8">
                   <div className="flex items-center space-x-4 text-[10px] text-[#716b64] uppercase tracking-widest mb-3">
@@ -85,12 +88,11 @@ export default function EditorialPreview() {
                   className="group flex flex-col sm:flex-row gap-6 p-6 bg-white border border-black/[0.08] hover:border-[#b58d4b]/60 transition-all duration-500 shadow-xs hover:shadow-xl"
                 >
                   <div className="relative aspect-square sm:w-36 overflow-hidden flex-shrink-0 bg-[#f4efe8] border border-black/5">
-                    <Image
+                    <ParallaxImage
                       src={article.image}
                       alt={article.title}
-                      fill
-                      sizes="150px"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      parallaxSpeed={0.12}
+                      containerClassName="w-full h-full"
                     />
                   </div>
                   <div className="flex-1 flex flex-col justify-between">

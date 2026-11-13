@@ -1,34 +1,57 @@
 'use client';
 
+import { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 export default function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+
+  // Parallax movement for background image
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.18]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const contentY = useTransform(scrollYProgress, [0, 0.7], [0, 50]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080808] text-[#faf8f5]">
-      {/* Full-bleed Background Image with Cinematic Vignettes */}
-      <div className="absolute inset-0 z-0">
+    <section
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#080808] text-[#faf8f5]"
+    >
+      {/* Full-bleed Background Image with Scroll Parallax */}
+      <motion.div
+        style={{ y: backgroundY, scale: backgroundScale }}
+        className="absolute inset-0 z-0 origin-center"
+      >
         <Image
           src="/images/hero/hero-bottle.jpg"
           alt="Maison Noir Luxury Perfume Flacon"
           fill
           priority
-          className="object-cover object-center filter contrast-125 brightness-75 scale-105 animate-float"
+          className="object-cover object-center filter contrast-125 brightness-75"
         />
         {/* Layered dark gradients for readability and drama */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/60 to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#080808]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(181,141,75,0.08)_0%,transparent_75%)]" />
-      </div>
+      </motion.div>
 
-      {/* Floating Gold Ambient Spheres */}
+      {/* Floating Gold Ambient Spheres with Scroll Parallax */}
       <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full bg-[#b58d4b]/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-[#b76e79]/10 blur-3xl pointer-events-none" />
 
       {/* Hero Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-32 pb-20 text-center flex flex-col items-center">
+      <motion.div
+        style={{ opacity: contentOpacity, y: contentY }}
+        className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 pt-32 pb-20 text-center flex flex-col items-center"
+      >
         {/* Overline Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -128,7 +151,7 @@ export default function Hero() {
             </span>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Bottom Scroll Indicator */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-2 pointer-events-none opacity-60">

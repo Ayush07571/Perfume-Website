@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ParallaxImage from '@/components/animations/ParallaxImage';
+import ImageReveal from '@/components/animations/ImageReveal';
 import { ArrowRight, Compass, Shield, Feather, Sparkles } from 'lucide-react';
 
 export const metadata = {
@@ -93,15 +95,17 @@ export default function AboutPage() {
 
           <div className="lg:col-span-6">
             <ScrollReveal direction="left">
-              <div className="relative aspect-[4/3] w-full border border-black/10 overflow-hidden shadow-xl bg-[#f4efe8]">
-                <Image
-                  src="/images/about/atelier-craft.jpg"
-                  alt="Maison Noir Fragrance Formulation"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
+              <ImageReveal curtainColor="#b58d4b" duration={1.2}>
+                <div className="relative aspect-[4/3] w-full border border-black/10 overflow-hidden shadow-2xl bg-[#f4efe8]">
+                  <ParallaxImage
+                    src="/images/about/atelier-craft.jpg"
+                    alt="Maison Noir Fragrance Formulation"
+                    parallaxSpeed={0.18}
+                    containerClassName="w-full h-full"
+                    imageClassName="filter contrast-110 brightness-95"
+                  />
+                </div>
+              </ImageReveal>
             </ScrollReveal>
           </div>
         </div>
@@ -154,15 +158,17 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1">
             <ScrollReveal direction="right">
-              <div className="relative aspect-[4/3] w-full border border-black/10 overflow-hidden shadow-xl bg-[#f4efe8]">
-                <Image
-                  src="/images/about/about-flacon.jpg"
-                  alt="Italian Smoked Flacon"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
+              <ImageReveal curtainColor="#171717" duration={1.2}>
+                <div className="relative aspect-[4/3] w-full border border-black/10 overflow-hidden shadow-2xl bg-[#f4efe8]">
+                  <ParallaxImage
+                    src="/images/about/about-flacon.jpg"
+                    alt="Italian Smoked Flacon"
+                    parallaxSpeed={0.18}
+                    containerClassName="w-full h-full"
+                    imageClassName="filter contrast-110 brightness-95"
+                  />
+                </div>
+              </ImageReveal>
             </ScrollReveal>
           </div>
 

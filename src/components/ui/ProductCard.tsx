@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Heart, ShoppingBag, Eye } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useCartStore } from '@/store/cartStore';
 import { formatPrice } from '@/lib/utils';
+import ImageReveal from '@/components/animations/ImageReveal';
 
 interface ProductCardProps {
   product: Product;
@@ -21,11 +23,20 @@ export default function ProductCard({
   dark = false,
 }: ProductCardProps) {
   const [hovered, setHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   const isInWishlist = useWishlistStore((state) => state.isInWishlist(product.id));
   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
   const addItem = useCartStore((state) => state.addItem);
 
   const price = product.prices[product.defaultVolume];
+
+  // Subtle scroll parallax for the perfume flacon
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['start end', 'end start'],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.08, 1.03, 1.08]);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -49,9 +60,10 @@ export default function ProductCard({
 
   return (
     <div
+      ref={cardRef}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`group relative flex flex-col transition-all duration-500 shadow-xs hover:shadow-xl ${
+      className={`group relative flex flex-col transition-all duration-500 shadow-xs hover:shadow-2xl ${
         dark
           ? 'bg-[#141414] border border-white/10 hover:border-[#b58d4b]/60'
           : 'bg-white border border-black/[0.07] hover:border-[#b58d4b]/60'
@@ -100,32 +112,43 @@ export default function ProductCard({
         />
       </button>
 
-      {/* Image Container */}
+      {/* Image Container with Scroll Parallax & Curtain Reveal */}
       <Link
         href={`/shop/${product.slug}`}
-        className={`relative aspect-[3/4] w-full overflow-hidden ${
+        className={`relative aspect-[3/4] w-full overflow-hidden block ${
           dark ? 'bg-[#1a1a1a]' : 'bg-[#f4efe8]'
         }`}
       >
-        <Image
-          src={product.images.main}
-          alt={product.name}
-          fill
-          priority={priority}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-cover transition-all duration-700 ${
-            hovered ? 'scale-105 opacity-0' : 'scale-100 opacity-100'
-          }`}
-        />
-        <Image
-          src={product.images.detail}
-          alt={`${product.name} detail`}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-cover transition-all duration-700 absolute inset-0 ${
-            hovered ? 'scale-105 opacity-100' : 'scale-100 opacity-0'
-          }`}
-        />
+        <ImageReveal
+          curtainColor={dark ? '#1c1c1c' : '#ede8e1'}
+          duration={0.9}
+          className="w-full h-full"
+        >
+          <motion.div
+            style={{ y: imageY, scale: imageScale }}
+            className="relative w-full h-[112%] -top-[6%]"
+          >
+            <Image
+              src={product.images.main}
+              alt={product.name}
+              fill
+              priority={priority}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className={`object-cover transition-opacity duration-700 ${
+                hovered ? 'opacity-0' : 'opacity-100'
+              }`}
+            />
+            <Image
+              src={product.images.detail}
+              alt={`${product.name} detail`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className={`object-cover transition-opacity duration-700 absolute inset-0 ${
+                hovered ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          </motion.div>
+        </ImageReveal>
 
         {/* Hover Quick Action Buttons */}
         <div className="absolute inset-x-4 bottom-4 z-20 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ParallaxImage from '@/components/animations/ParallaxImage';
+import ImageReveal from '@/components/animations/ImageReveal';
 import { ARTICLES } from '@/data/articles';
 import { ArrowRight, BookOpen } from 'lucide-react';
 
@@ -40,17 +42,18 @@ export default function JournalPage() {
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
                 <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto lg:h-[460px] overflow-hidden bg-[#f4efe8]">
-                  <Image
-                    src={ARTICLES[0].image}
-                    alt={ARTICLES[0].title}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 60vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-semibold">
-                    Featured Essay
-                  </div>
+                  <ImageReveal curtainColor="#b58d4b" duration={1.2}>
+                    <ParallaxImage
+                      src={ARTICLES[0].image}
+                      alt={ARTICLES[0].title}
+                      priority
+                      parallaxSpeed={0.16}
+                      containerClassName="w-full h-full min-h-[300px] lg:min-h-[460px]"
+                    />
+                    <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-semibold z-10">
+                      Featured Essay
+                    </div>
+                  </ImageReveal>
                 </div>
 
                 <div className="lg:col-span-5 p-8 lg:p-12 space-y-4">
@@ -85,16 +88,18 @@ export default function JournalPage() {
               >
                 <div>
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#f4efe8]">
-                    <Image
-                      src={article.image}
-                      alt={article.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-semibold">
-                      {article.category}
-                    </div>
+                    <ImageReveal curtainColor="#ede8e1" duration={1.1}>
+                      <ParallaxImage
+                        src={article.image}
+                        alt={article.title}
+                        parallaxSpeed={0.14}
+                        containerClassName="w-full h-full"
+                        imageClassName="filter brightness-95 contrast-105"
+                      />
+                      <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-semibold z-10">
+                        {article.category}
+                      </div>
+                    </ImageReveal>
                   </div>
 
                   <div className="p-8">

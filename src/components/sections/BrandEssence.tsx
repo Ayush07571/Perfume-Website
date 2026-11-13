@@ -1,6 +1,7 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ParallaxImage from '@/components/animations/ParallaxImage';
+import ImageReveal from '@/components/animations/ImageReveal';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function BrandEssence() {
@@ -8,27 +9,47 @@ export default function BrandEssence() {
     <section className="py-28 md:py-36 bg-[#faf8f5] text-[#171717] relative overflow-hidden border-b border-black/[0.06]">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Visual Composition on Light Pedestal */}
+          {/* Left Column: Multi-plane Parallax & Curtain Reveal Image */}
           <div className="lg:col-span-6 relative">
             <ScrollReveal direction="left">
-              <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none border border-black/10 overflow-hidden shadow-2xl bg-[#f4efe8]">
-                <Image
-                  src="/images/about/atelier-craft.jpg"
-                  alt="Maison Noir Atelier Craftsmanship"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover filter contrast-110 brightness-95 hover:scale-105 transition-transform duration-1000"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+              <div className="relative">
+                {/* Primary Atelier Image */}
+                <ImageReveal curtainColor="#b58d4b" duration={1.2}>
+                  <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:max-w-none border border-black/10 overflow-hidden shadow-2xl bg-[#f4efe8]">
+                    <ParallaxImage
+                      src="/images/about/atelier-craft.jpg"
+                      alt="Maison Noir Atelier Craftsmanship"
+                      parallaxSpeed={0.16}
+                      containerClassName="w-full h-full"
+                      imageClassName="filter contrast-110 brightness-95"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 pointer-events-none" />
 
-                {/* Floating caption card */}
-                <div className="absolute bottom-6 left-6 right-6 p-4 bg-white/95 backdrop-blur-md border border-black/10 shadow-lg">
-                  <span className="text-[9px] uppercase tracking-[0.25em] text-[#b58d4b] font-semibold">
-                    Atelier Maceration · Grasse
-                  </span>
-                  <p className="text-xs text-[#171717] mt-0.5 font-serif italic">
-                    "Perfume is the art of immortalizing ephemeral beauty."
-                  </p>
+                    {/* Floating caption card */}
+                    <div className="absolute bottom-6 left-6 right-6 p-4 bg-white/95 backdrop-blur-md border border-black/10 shadow-lg z-10">
+                      <span className="text-[9px] uppercase tracking-[0.25em] text-[#b58d4b] font-semibold">
+                        Atelier Maceration · Grasse
+                      </span>
+                      <p className="text-xs text-[#171717] mt-0.5 font-serif italic">
+                        "Perfume is the art of immortalizing ephemeral beauty."
+                      </p>
+                    </div>
+                  </div>
+                </ImageReveal>
+
+                {/* Floating Secondary Parallax Flacon (Offset 3D Depth) */}
+                <div className="hidden sm:block absolute -bottom-10 -right-6 lg:-right-8 w-44 md:w-52 aspect-[3/4] z-20 shadow-2xl border-2 border-[#b58d4b]/40 overflow-hidden bg-[#171717]">
+                  <ImageReveal curtainColor="#171717" delay={0.4} duration={1}>
+                    <ParallaxImage
+                      src="/images/products/noir-absolu-detail.jpg"
+                      alt="Hand-blown obsidian crystal flacon"
+                      parallaxSpeed={-0.24}
+                      containerClassName="w-full h-full"
+                    />
+                  </ImageReveal>
+                  <div className="absolute top-2 left-2 z-30 px-2 py-0.5 bg-black/80 backdrop-blur-md border border-white/10 text-[8px] uppercase tracking-[0.2em] text-[#e5cb9b]">
+                    Batch N° 01
+                  </div>
                 </div>
               </div>
             </ScrollReveal>

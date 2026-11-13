@@ -1,5 +1,6 @@
-import Image from 'next/image';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ParallaxImage from '@/components/animations/ParallaxImage';
+import ImageReveal from '@/components/animations/ImageReveal';
 import { Compass, Sparkles } from 'lucide-react';
 
 export default function ScentStory() {
@@ -51,20 +52,26 @@ export default function ScentStory() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {ingredients.map((ing, idx) => (
-            <ScrollReveal key={ing.name} delay={idx * 0.15}>
-              <div className="group relative bg-white border border-black/[0.08] hover:border-[#b58d4b]/60 transition-all duration-500 overflow-hidden flex flex-col h-full shadow-xs hover:shadow-xl">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f4efe8]">
-                  <Image
-                    src={ing.image}
-                    alt={ing.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-95 contrast-110"
-                  />
-                  <div className="absolute top-3 right-3 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-2.5 py-1 text-[#171717] border border-black/10 font-medium">
-                    {ing.origin}
+            <ScrollReveal key={ing.name} delay={idx * 0.12}>
+              <div className="group relative bg-white border border-black/[0.08] hover:border-[#b58d4b]/60 transition-all duration-500 overflow-hidden flex flex-col h-full shadow-xs hover:shadow-2xl">
+                <ImageReveal
+                  curtainColor={idx % 2 === 0 ? '#b58d4b' : '#ede8e1'}
+                  delay={idx * 0.1}
+                  duration={1.1}
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f4efe8]">
+                    <ParallaxImage
+                      src={ing.image}
+                      alt={ing.name}
+                      parallaxSpeed={idx % 2 === 0 ? 0.22 : 0.12}
+                      containerClassName="w-full h-full"
+                      imageClassName="filter brightness-95 contrast-110 transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute top-3 right-3 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-2.5 py-1 text-[#171717] border border-black/10 font-medium z-10">
+                      {ing.origin}
+                    </div>
                   </div>
-                </div>
+                </ImageReveal>
 
                 <div className="p-6 flex flex-col flex-1 justify-between bg-white">
                   <div>

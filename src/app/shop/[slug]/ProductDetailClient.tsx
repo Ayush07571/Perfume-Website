@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Product, VolumeOption } from '@/data/products';
 import ScentPyramid from '@/components/ui/ScentPyramid';
 import ProductCard from '@/components/ui/ProductCard';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ImageReveal from '@/components/animations/ImageReveal';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { formatPrice } from '@/lib/utils';
@@ -30,6 +32,14 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
   const [selectedVolume, setSelectedVolume] = useState<VolumeOption>(product.defaultVolume);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState<string>(product.images.main);
+
+  const stageRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: stageRef,
+    offset: ['start end', 'end start'],
+  });
+  const stageY = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
+  const stageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.07, 1.02, 1.07]);
 
   const addItem = useCartStore((state) => state.addItem);
   const isInWishlist = useWishlistStore((state) => state.isInWishlist(product.id));
@@ -76,19 +86,29 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-24 border-b border-black/[0.08]">
           {/* Left Column: Image Gallery */}
           <div className="lg:col-span-7 space-y-4">
-            {/* Main Stage Image */}
-            <div className="relative aspect-[4/5] w-full bg-[#f4efe8] border border-black/[0.08] overflow-hidden group shadow-lg">
-              <Image
-                src={activeImage}
-                alt={product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-semibold">
-                {product.intensity} Concentration
-              </div>
+            {/* Main Stage Image with Scroll Parallax and Curtain Reveal */}
+            <div
+              ref={stageRef}
+              className="relative aspect-[4/5] w-full bg-[#f4efe8] border border-black/[0.08] overflow-hidden group shadow-xl"
+            >
+              <ImageReveal key={activeImage} curtainColor="#b58d4b" duration={0.9}>
+                <motion.div
+                  style={{ y: stageY, scale: stageScale }}
+                  className="relative w-full h-[114%] -top-[7%]"
+                >
+                  <Image
+                    src={activeImage}
+                    alt={product.name}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </motion.div>
+                <div className="absolute top-4 left-4 text-[9px] uppercase tracking-widest bg-white/90 backdrop-blur-md px-3 py-1 text-[#171717] border border-black/10 font-semibold z-10">
+                  {product.intensity} Concentration
+                </div>
+              </ImageReveal>
             </div>
 
             {/* Thumbnail Selection */}

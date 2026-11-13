@@ -88,8 +88,26 @@ export const useProfileStore = create<ProfileStore>()(
         }),
     }),
     {
-      name: 'maison-noir-profile-v2',
+      name: 'maison-noir-profile-v3',
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          if (
+            !state.profile?.fullName ||
+            state.profile.fullName.toLowerCase().includes('ayush') ||
+            state.profile.email.toLowerCase().includes('ayush')
+          ) {
+            state.profile = {
+              fullName: 'Alistair Sterling',
+              email: 'alistair.sterling@sanctum.com',
+              phone: '+91 98765 43210',
+              address: 'Penthouse 4B, Malabar Hill',
+              city: 'Mumbai',
+              postalCode: '400006',
+            };
+          }
+        }
+      },
     }
   )
 );
