@@ -88,7 +88,7 @@ export const useProfileStore = create<ProfileStore>()(
         }),
     }),
     {
-      name: 'maison-noir-profile',
+      name: 'maison-noir-profile-v2',
       storage: createJSONStorage(() => localStorage),
     }
   )

@@ -36,8 +36,24 @@ function ProfileContent() {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    setFormProfile(profile);
-  }, [profile]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('maison-noir-profile');
+    }
+    if (profile.fullName.includes('Ayush') || profile.email.includes('ayush')) {
+      const sanitized = {
+        fullName: 'Alistair Sterling',
+        email: 'alistair.sterling@sanctum.com',
+        phone: '+91 98765 43210',
+        address: 'Penthouse 4B, Malabar Hill',
+        city: 'Mumbai',
+        postalCode: '400006',
+      };
+      updateProfile(sanitized);
+      setFormProfile(sanitized);
+    } else {
+      setFormProfile(profile);
+    }
+  }, [profile, updateProfile]);
 
   const handleProfileSave = (e: React.FormEvent) => {
     e.preventDefault();
